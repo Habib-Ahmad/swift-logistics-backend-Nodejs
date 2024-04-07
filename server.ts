@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { connectDb } from "./config";
-import { userRouter } from "./routes";
+import { userRouter, vehicleRouter } from "./routes";
 import errorHandler from "./middleware/errorHandler";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -28,6 +28,7 @@ app.use(
   })
 );
 app.use("/api/users", userRouter);
+app.use("/api/vehicles", vehicleRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
