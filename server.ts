@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectDb } from "./config";
 import {
   driverRouter,
+  orderRouter,
   shipmentRouter,
   stationRouter,
   userRouter,
@@ -39,6 +40,7 @@ app.use("/api/vehicles", vehicleRouter);
 app.use("/api/drivers", driverRouter);
 app.use("/api/stations", stationRouter);
 app.use("/api/shipments", shipmentRouter);
+app.use("/api/orders", orderRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
