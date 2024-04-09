@@ -53,14 +53,14 @@ const registerVehicle = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const getAllVehicles = asyncHandler(async (req: Request, res: Response) => {
-  const vehicles = await Vehicle.find({});
+  const vehicles = await Vehicle.find({}, { __v: 0 });
   res.status(200).json({ vehicles });
 });
 
 const getVehicleById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const vehicle = await Vehicle.findById(id);
+  const vehicle = await Vehicle.findById(id, { __v: 0 });
 
   if (!vehicle) {
     res.status(404);
@@ -83,7 +83,7 @@ const updateVehicle = asyncHandler(async (req: Request, res: Response) => {
     status,
   } = req.body;
 
-  const vehicle = await Vehicle.findById(id);
+  const vehicle = await Vehicle.findById(id, { __v: 0 });
 
   if (!vehicle) {
     res.status(404);
@@ -122,7 +122,7 @@ const deleteVehicle = asyncHandler(async (req: Request, res: Response) => {
 export {
   registerVehicle,
   getAllVehicles,
-  updateVehicle,
   getVehicleById,
+  updateVehicle,
   deleteVehicle,
 };

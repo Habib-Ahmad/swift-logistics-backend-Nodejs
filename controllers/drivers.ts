@@ -43,11 +43,29 @@ const registerDriver = asyncHandler(async (req: Request, res: Response) => {
   }
 });
 
+const getAllDrivers = asyncHandler(async (req: Request, res: Response) => {
+  const drivers = await Driver.find({}, { __v: 0 });
+  res.status(200).json({ drivers });
+});
+
+const getDriverById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const driver = await Driver.findById(id, { __v: 0 });
+
+  if (!driver) {
+    res.status(404);
+    throw new Error("Driver not found");
+  }
+
+  res.status(200).json({ driver });
+});
+
 const updateDriver = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { firstName, lastName, email, dob, phone, address, status } = req.body;
 
-  const driver = await Driver.findById(id);
+  const driver = await Driver.findById(id, { __v: 0 });
 
   if (!driver) {
     res.status(404);
@@ -67,24 +85,6 @@ const updateDriver = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({ driver: updatedDriver });
 });
 
-const getAllDrivers = asyncHandler(async (req: Request, res: Response) => {
-  const drivers = await Driver.find({});
-  res.status(200).json({ drivers });
-});
-
-const getDriverById = asyncHandler(async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const driver = await Driver.findById(id);
-
-  if (!driver) {
-    res.status(404);
-    throw new Error("Driver not found");
-  }
-
-  res.status(200).json({ driver });
-});
-
 const deleteDriver = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -102,8 +102,8 @@ const deleteDriver = asyncHandler(async (req: Request, res: Response) => {
 
 export {
   registerDriver,
-  updateDriver,
   getAllDrivers,
   getDriverById,
+  updateDriver,
   deleteDriver,
 };

@@ -23,6 +23,10 @@ const driverSchema = new Schema<IDriver>(
   { timestamps: true }
 );
 
+driverSchema.set("toJSON", {
+  virtuals: true,
+});
+
 const Driver = model<IDriver>("Driver", driverSchema);
 
 export default Driver;

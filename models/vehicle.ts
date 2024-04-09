@@ -8,7 +8,7 @@ export interface IVehicle {
   registrationNumber: string;
   type: "saloon" | "bus" | "bike";
   transmission?: "automatic" | "manual";
-  status: "idle" | "in transit" | "inactive";
+  status: "idle" | "in transit" | "inactive" | "decomissioned";
 }
 
 const vehicleSchema = new Schema<IVehicle>(
@@ -24,6 +24,10 @@ const vehicleSchema = new Schema<IVehicle>(
   },
   { timestamps: true }
 );
+
+vehicleSchema.set("toJSON", {
+  virtuals: true,
+});
 
 const Vehicle = model<IVehicle>("Vehicle", vehicleSchema);
 
