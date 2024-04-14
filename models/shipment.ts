@@ -1,18 +1,21 @@
-import { Schema, model } from "mongoose";
-import Station, { IStation } from "./station";
+import { Schema, Types, model } from "mongoose";
 
 export interface IShipment {
   name: string;
-  startPoint: IStation;
-  destination: IStation;
+  startPoint: Types.ObjectId;
+  destination: Types.ObjectId;
   status: "active" | "inactive";
 }
 
 const shipmentSchema = new Schema<IShipment>(
   {
     name: { type: String, required: true },
-    startPoint: { type: Station, required: true },
-    destination: { type: Station, required: true },
+    startPoint: { type: Schema.Types.ObjectId, ref: "Station", required: true },
+    destination: {
+      type: Schema.Types.ObjectId,
+      ref: "Station",
+      required: true,
+    },
     status: {
       type: String,
       enum: ["active", "inactive"],
