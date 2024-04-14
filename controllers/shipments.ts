@@ -3,15 +3,13 @@ import asyncHandler from "express-async-handler";
 import { Shipment } from "../models";
 
 const registerShipment = asyncHandler(async (req: Request, res: Response) => {
-  const { name, startPoint, destination, vehicleId, driverId } = req.body;
+  const { name, startPoint, destination } = req.body;
 
   const missingFields: string[] = [];
 
   if (!name) missingFields.push("name");
   if (!startPoint) missingFields.push("startPoint");
   if (!destination) missingFields.push("destination");
-  if (!vehicleId) missingFields.push("vehicleId");
-  if (!driverId) missingFields.push("driverId");
 
   if (missingFields.length) {
     res.status(400);
@@ -28,10 +26,7 @@ const registerShipment = asyncHandler(async (req: Request, res: Response) => {
     name,
     startPoint,
     destination,
-    vehicleId,
-    driverId,
-    items: [],
-    status: "completed",
+    status: "",
   });
 
   if (shipment) {
@@ -62,8 +57,7 @@ const getShipmentById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateShipment = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { name, startPoint, destination, vehicleId, driverId, status } =
-    req.body;
+  const { startPoint, destination, status } = req.body;
 
   const shipment = await Shipment.findById(id, { __v: 0 });
 
@@ -72,11 +66,8 @@ const updateShipment = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("Shipment not found");
   }
 
-  shipment.name = name || shipment.name;
   shipment.startPoint = startPoint || shipment.startPoint;
   shipment.destination = destination || shipment.destination;
-  shipment.vehicleId = vehicleId || shipment.vehicleId;
-  shipment.driverId = driverId || shipment.driverId;
   shipment.status = status || shipment.status;
 
   const updatedShipment = await shipment.save();
