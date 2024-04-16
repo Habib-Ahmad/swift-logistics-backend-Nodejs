@@ -4,6 +4,19 @@ export interface IShipment {
   name: string;
   startPoint: Types.ObjectId;
   destination: Types.ObjectId;
+  schedule: {
+    frequency: "daily" | "weekly" | "monthly";
+    interval: number;
+    dayOfWeek?:
+      | ""
+      | "monday"
+      | "tuesday"
+      | "wednesday"
+      | "thursday"
+      | "friday"
+      | "saturday"
+      | "sunday";
+  };
   status: "active" | "inactive";
 }
 
@@ -15,6 +28,26 @@ const shipmentSchema = new Schema<IShipment>(
       type: Schema.Types.ObjectId,
       ref: "Station",
       required: true,
+    },
+    schedule: {
+      frequency: {
+        type: String,
+        enum: ["daily", "weekly", "monthly"],
+        required: true,
+      },
+      interval: { type: Number, required: true },
+      dayOfWeek: {
+        type: String,
+        enum: [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday",
+        ],
+      },
     },
     status: {
       type: String,

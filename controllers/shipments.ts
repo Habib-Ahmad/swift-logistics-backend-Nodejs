@@ -3,13 +3,15 @@ import asyncHandler from "express-async-handler";
 import { Shipment } from "../models";
 
 const registerShipment = asyncHandler(async (req: Request, res: Response) => {
-  const { name, startPoint, destination } = req.body;
+  const { name, startPoint, destination, schedule } = req.body;
 
   const missingFields: string[] = [];
 
   if (!name) missingFields.push("name");
   if (!startPoint) missingFields.push("startPoint");
   if (!destination) missingFields.push("destination");
+  if (!schedule?.frequency) missingFields.push("frequency");
+  if (!schedule?.interval) missingFields.push("interval");
 
   if (missingFields.length) {
     res.status(400);
@@ -26,7 +28,8 @@ const registerShipment = asyncHandler(async (req: Request, res: Response) => {
     name,
     startPoint,
     destination,
-    status: "",
+    schedule,
+    status: "active",
   });
 
   if (shipment) {
@@ -57,7 +60,7 @@ const getShipmentById = asyncHandler(async (req: Request, res: Response) => {
 
 const updateShipment = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { startPoint, destination, status } = req.body;
+  const { startPoint, destination, schedule, status } = req.body;
 
   const shipment = await Shipment.findById(id, { __v: 0 });
 
@@ -69,6 +72,11 @@ const updateShipment = asyncHandler(async (req: Request, res: Response) => {
   shipment.startPoint = startPoint || shipment.startPoint;
   shipment.destination = destination || shipment.destination;
   shipment.status = status || shipment.status;
+  shipment.schedule.frequency =
+    schedule.frequency || shipment.schedule.frequency;
+  shipment.schedule.interval = schedule.interval || shipment.schedule.interval;
+  shipment.schedule.dayOfWeek =
+    schedule.dayOfWeek || shipment.schedule.dayOfWeek;
 
   const updatedShipment = await shipment.save();
 

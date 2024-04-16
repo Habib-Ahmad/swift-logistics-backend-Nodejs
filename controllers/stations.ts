@@ -30,7 +30,7 @@ const registerStation = asyncHandler(async (req: Request, res: Response) => {
     res.status(201).json({ station });
   } else {
     res.status(400);
-    throw new Error("User data is not valid");
+    throw new Error("Station data is not valid");
   }
 });
 
