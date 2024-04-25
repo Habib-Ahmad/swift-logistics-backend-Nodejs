@@ -7,6 +7,7 @@ export interface IShipment {
   schedule: {
     frequency: "daily" | "weekly" | "monthly";
     interval: number;
+    timesPerDay?: number;
     dayOfWeek?:
       | ""
       | "monday"
@@ -16,6 +17,7 @@ export interface IShipment {
       | "friday"
       | "saturday"
       | "sunday";
+    dayOfMonth?: number;
   };
   status: "active" | "inactive";
 }
@@ -36,6 +38,7 @@ const shipmentSchema = new Schema<IShipment>(
         required: true,
       },
       interval: { type: Number, required: true },
+      timesPerDay: { type: Number },
       dayOfWeek: {
         type: String,
         enum: [
@@ -48,6 +51,7 @@ const shipmentSchema = new Schema<IShipment>(
           "sunday",
         ],
       },
+      dayOfMonth: { type: Number },
     },
     status: {
       type: String,
