@@ -1,70 +1,75 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { Order } from "../models";
 
-const registerOrder = asyncHandler(async (req: Request, res: Response) => {
-  const { sender, recipient, shipmentId } = req.body;
-  const {
-    firstName: senderFirstName,
-    lastName: senderLastName,
-    phone: senderPhone,
-  } = sender;
-  const {
-    firstName: recipientFirstName,
-    lastName: recipientLastName,
-    phone: recipientPhone,
-    address: recipientAddress,
-  } = recipient;
-
-  const missingFields: string[] = [];
-
-  if (!sender) missingFields.push("sender");
-  if (!senderFirstName) missingFields.push("sender firstName");
-  if (!senderLastName) missingFields.push("sender lastName");
-  if (!senderPhone) missingFields.push("sender phone");
-
-  if (!recipient) missingFields.push("recipient");
-  if (!recipientFirstName) missingFields.push("recipient firstName");
-  if (!recipientLastName) missingFields.push("recipient lastName");
-  if (!recipientPhone) missingFields.push("recipient phone");
-  if (!recipientAddress) missingFields.push("recipient address");
-
-  if (!shipmentId) missingFields.push("shipmentId");
-
-  if (missingFields.length) {
-    res.status(400);
-    throw new Error(`Missing mandatory fields: ${missingFields.join(", ")}`);
-  }
-
-  const isOrderRegistered = await Order.findOne({ name });
-  if (isOrderRegistered) {
-    res.status(400);
-    throw new Error("Order already registered");
-  }
-
-  const order = await Order.create({
-    sender: {
-      firstName: senderFirstName,
-      lastName: senderLastName,
-      phone: senderPhone,
-    },
-    recipient: {
-      firstName: recipientFirstName,
-      lastName: recipientLastName,
+const registerOrder = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {
+      sender,
+      recipient,
+      shipmentId,
+      weight,
+      description,
+      transactionId,
+    } = req.body;
+    const { name: senderName, phone: senderPhone } = sender;
+    const {
+      name: recipientName,
       phone: recipientPhone,
       address: recipientAddress,
-    },
-    shipmentHistory: [shipmentId],
-    status: "pending",
-  });
+    } = recipient;
 
-  if (order) {
-    res.status(201).json({ order });
-  } else {
-    res.status(400);
-    throw new Error("Order data is not valid");
+    const missingFields: string[] = [];
+
+    if (!sender) missingFields.push("sender");
+    if (!senderName) missingFields.push("sender name");
+    if (!senderPhone) missingFields.push("sender phone");
+
+    if (!recipient) missingFields.push("recipient");
+    if (!recipientName) missingFields.push("recipient name");
+    if (!recipientPhone) missingFields.push("recipient phone");
+    if (!recipientAddress) missingFields.push("recipient address");
+
+    if (!shipmentId) missingFields.push("shipmentId");
+    if (!transactionId) missingFields.push("transactionId");
+    if (!weight) missingFields.push("weight");
+    if (!description) missingFields.push("description");
+
+    if (missingFields.length) {
+      res.status(400);
+      throw new Error(`Missing mandatory fields: ${missingFields.join(", ")}`);
+    }
+
+    try {
+      const order = await Order.create({
+        sender: {
+          name: senderName,
+          phone: senderPhone,
+        },
+        recipient: {
+          name: recipientName,
+          phone: recipientPhone,
+          address: recipientAddress,
+        },
+        shipmentHistory: [shipmentId],
+        transactionId,
+        weight,
+        description,
+        status: "pending",
+      });
+
+      if (!order) {
+        res.status(400);
+        throw new Error("Order data is not valid");
+      }
+
+      res.status(201).json({ order });
+    } catch (error: any) {
+      res.status(400);
+      throw new Error(error.message);
+    }
   }
-});
+);
 
 const getAllOrders = asyncHandler(async (req: Request, res: Response) => {
   const orders = await Order.find({}, { __v: 0 });
@@ -87,14 +92,9 @@ const getOrderById = asyncHandler(async (req: Request, res: Response) => {
 const updateOrder = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { sender, recipient, shipmentId } = req.body;
+  const { name: senderName, phone: senderPhone } = sender;
   const {
-    firstName: senderFirstName,
-    lastName: senderLastName,
-    phone: senderPhone,
-  } = sender;
-  const {
-    firstName: recipientFirstName,
-    lastName: recipientLastName,
+    name: recipientName,
     phone: recipientPhone,
     address: recipientAddress,
   } = recipient;
@@ -107,13 +107,11 @@ const updateOrder = asyncHandler(async (req: Request, res: Response) => {
   }
 
   order.sender = {
-    firstName: senderFirstName || order.sender.firstName,
-    lastName: senderLastName || order.sender.lastName,
+    name: senderName || order.sender.name,
     phone: senderPhone || order.sender.phone,
   };
   order.recipient = {
-    firstName: recipientFirstName || order.recipient.firstName,
-    lastName: recipientLastName || order.recipient.lastName,
+    name: recipientName || order.recipient.name,
     phone: recipientPhone || order.recipient.phone,
     address: recipientAddress || order.recipient.address,
   };

@@ -2,16 +2,17 @@ import { Schema, Types, model } from "mongoose";
 
 export interface IOrder {
   sender: {
-    firstName: string;
-    lastName: string;
+    name: string;
     phone: string;
   };
   recipient: {
-    firstName: string;
-    lastName: string;
+    name: string;
     phone: string;
     address: string;
   };
+  transactionId: string;
+  weight: number; // In kg
+  description: string;
   shipmentHistory: Types.ObjectId[];
   deliveryHistory: Types.ObjectId[];
   status: "pending" | "in transit" | "delivered";
@@ -20,19 +21,24 @@ export interface IOrder {
 const orderSchema = new Schema<IOrder>(
   {
     sender: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
+      name: { type: String, required: true },
       phone: { type: String, required: true },
     },
     recipient: {
-      firstName: { type: String, required: true },
-      lastName: { type: String, required: true },
+      name: { type: String, required: true },
       phone: { type: String, required: true },
       address: { type: String, required: true },
     },
+    transactionId: { type: String, required: true },
+    weight: { type: Number, required: true },
+    description: { type: String, required: true },
     shipmentHistory: [{ type: Schema.Types.ObjectId, ref: "Shipment" }],
     deliveryHistory: [{ type: Schema.Types.ObjectId, ref: "Delivery" }],
-    status: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["pending", "in transit", "delivered"],
+      required: true,
+    },
   },
   { timestamps: true }
 );
