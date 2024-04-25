@@ -8,6 +8,7 @@ const errorHandler =
 
     const responseObj: any = {
       title: "",
+      status: statusCode,
       message: err.message,
     };
 

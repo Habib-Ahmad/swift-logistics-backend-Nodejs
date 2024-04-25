@@ -89,6 +89,7 @@ const login = asyncHandler(async (req: Request, res: Response) => {
       .cookie("refreshToken", refreshToken, {
         httpOnly: true,
         sameSite: "none",
+        secure: true,
         expires: refreshExpiry,
       })
       .json({ accessToken, accessExpiry, user: others });
