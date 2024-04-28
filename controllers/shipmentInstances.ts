@@ -81,17 +81,27 @@ const updateShipmentInstance = asyncHandler(
       throw new Error("ShipmentInstance not found");
     }
 
-    shipment.name = name || shipment.name;
-    shipment.date = date || shipment.date;
-    shipment.vehicleId = vehicleId || shipment.vehicleId;
-    shipment.driverId = driverId || shipment.driverId;
-    shipment.shipmentId = shipmentId || shipment.shipmentId;
-    shipment.items = [...shipment.items, ...items] || shipment.items;
-    shipment.status = status || shipment.status;
+    const newItems = items.length ? items : [];
+    const oldItems = shipment.items;
 
-    const updatedShipmentInstance = await shipment.save();
+    try {
+      shipment.name = name || shipment.name;
+      shipment.date = date || shipment.date;
+      shipment.vehicleId = vehicleId || shipment.vehicleId;
+      shipment.driverId = driverId || shipment.driverId;
+      shipment.shipmentId = shipmentId || shipment.shipmentId;
+      shipment.items = oldItems.length
+        ? [...oldItems, ...newItems]
+        : shipment.items;
+      shipment.status = status || shipment.status;
 
-    res.status(200).json({ shipment: updatedShipmentInstance });
+      const updatedShipmentInstance = await shipment.save();
+
+      res.status(200).json({ shipment: updatedShipmentInstance });
+    } catch (error: any) {
+      res.status(400);
+      throw new Error(error.message);
+    }
   }
 );
 

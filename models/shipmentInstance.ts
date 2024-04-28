@@ -7,7 +7,7 @@ export interface IShipmentInstance {
   vehicleId: Types.ObjectId;
   driverId: Types.ObjectId;
   items: Types.ObjectId[];
-  status: "pending" | "in progress" | "completed";
+  status: "pending" | "in progress" | "completed" | "cancelled";
 }
 
 const InstanceSchema = new Schema<IShipmentInstance>(
@@ -24,7 +24,7 @@ const InstanceSchema = new Schema<IShipmentInstance>(
     items: [{ type: Schema.Types.ObjectId, ref: "Order" }],
     status: {
       type: String,
-      enum: ["pending", "in progress", "completed"],
+      enum: ["pending", "in progress", "completed", "cancelled"],
       required: true,
     },
   },
