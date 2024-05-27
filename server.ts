@@ -9,6 +9,7 @@ import {
   stationRouter,
   userRouter,
   vehicleRouter,
+  statisticsRouter,
 } from "./routes";
 import errorHandler from "./middleware/errorHandler";
 import cookieParser from "cookie-parser";
@@ -43,6 +44,7 @@ app.use("/api/stations", stationRouter);
 app.use("/api/shipments", shipmentRouter);
 app.use("/api/shipmentInstances", shipmentInstancesRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/statistics", statisticsRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

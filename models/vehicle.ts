@@ -6,7 +6,7 @@ export interface IVehicle {
   year: string;
   color: string;
   registrationNumber: string;
-  type: "saloon" | "bus" | "bike";
+  type: "van" | "saloon" | "bike";
   transmission?: "automatic" | "manual";
   status: "idle" | "in transit" | "inactive" | "decomissioned";
 }

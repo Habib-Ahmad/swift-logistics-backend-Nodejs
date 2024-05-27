@@ -9,6 +9,7 @@ const registerOrder = asyncHandler(
       recipient,
       shipmentId,
       weight,
+      price,
       description,
       transactionId,
     } = req.body;
@@ -33,6 +34,7 @@ const registerOrder = asyncHandler(
     if (!shipmentId) missingFields.push("shipmentId");
     if (!transactionId) missingFields.push("transactionId");
     if (!weight) missingFields.push("weight");
+    if (!price) missingFields.push("price");
     if (!description) missingFields.push("description");
 
     if (missingFields.length) {
@@ -54,6 +56,7 @@ const registerOrder = asyncHandler(
         shipmentHistory: [shipmentId],
         transactionId,
         weight,
+        price,
         description,
         status: "pending",
       });

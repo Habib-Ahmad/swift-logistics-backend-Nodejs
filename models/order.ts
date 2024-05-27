@@ -12,6 +12,7 @@ export interface IOrder {
   };
   transactionId: string;
   weight: number; // In kg
+  price: number;
   description: string;
   shipmentHistory: Types.ObjectId[];
   deliveryHistory: Types.ObjectId[];
@@ -31,6 +32,7 @@ const orderSchema = new Schema<IOrder>(
     },
     transactionId: { type: String, required: true },
     weight: { type: Number, required: true },
+    price: { type: Number, required: true },
     description: { type: String, required: true },
     shipmentHistory: [{ type: Schema.Types.ObjectId, ref: "Shipment" }],
     deliveryHistory: [{ type: Schema.Types.ObjectId, ref: "Delivery" }],
